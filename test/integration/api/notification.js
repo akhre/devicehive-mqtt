@@ -87,7 +87,7 @@ it(`should subscribe for "${INSERT_TOPIC}" topic`, () => {
     });
 });
 
-it(`should create new notification with name: "${TEST_NOTIFICATION_NAME}" for device with id: "${Config.DEVICE_ID}"`, () => {
+it(`should create new notification with name: "${TEST_NOTIFICATION_NAME}" for device with id: "${Config.JOB_ID}"`, () => {
     const requestId = randomString.generate();
 
     return new Promise((resolve) => {
@@ -105,7 +105,7 @@ it(`should create new notification with name: "${TEST_NOTIFICATION_NAME}" for de
             JSON.stringify({
                 action: INSERT_ACTION,
                 requestId: requestId,
-                deviceId: Config.DEVICE_ID,
+                jobId: Config.JOB_ID,
                 notification: {
                     notification: TEST_NOTIFICATION_NAME,
                     parameters: TEST_NOTIFICATION_PARAMETERS,
@@ -126,7 +126,7 @@ it(`should query the notification with name: "${TEST_NOTIFICATION_NAME}"`, () =>
             expect(message.notification.notification).to.equal(
                 TEST_NOTIFICATION_NAME
             );
-            expect(message.notification.deviceId).to.equal(Config.DEVICE_ID);
+            expect(message.notification.jobId).to.equal(Config.JOB_ID);
             expect(message.notification.parameters).to.deep.equal(
                 TEST_NOTIFICATION_PARAMETERS
             );
@@ -139,14 +139,14 @@ it(`should query the notification with name: "${TEST_NOTIFICATION_NAME}"`, () =>
             JSON.stringify({
                 action: GET_ACTION,
                 requestId: requestId,
-                deviceId: Config.DEVICE_ID,
+                jobId: Config.JOB_ID,
                 notificationId: testNotificationId,
             })
         );
     });
 });
 
-it(`should query the list of notifications for device with id: "${Config.DEVICE_ID}" with existing notification with name: "${TEST_NOTIFICATION_NAME}"`, () => {
+it(`should query the list of notifications for device with id: "${Config.JOB_ID}" with existing notification with name: "${TEST_NOTIFICATION_NAME}"`, () => {
     const requestId = randomString.generate();
 
     return new Promise((resolve) => {
@@ -172,7 +172,7 @@ it(`should query the list of notifications for device with id: "${Config.DEVICE_
             JSON.stringify({
                 action: LIST_ACTION,
                 requestId: requestId,
-                deviceId: Config.DEVICE_ID,
+                jobId: Config.JOB_ID,
                 take: 1000,
             })
         );

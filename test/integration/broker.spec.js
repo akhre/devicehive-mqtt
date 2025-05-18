@@ -13,11 +13,11 @@ describe(`MQTT broker (should be run on localhost:1883)`, () => {
 
     describe(`Configuration API`, () => require(`./api/configuration.js`));
 
-    describe(`Device API`, () => require(`./api/device.js`));
+    describe(`Job API`, () => require(`./api/job.js`));
 
-    describe(`Device Type API`, () => require(`./api/devicetype.js`));
+    describe(`Printer API`, () => require(`./api/printer.js`));
 
-    describe(`Network API`, () => require(`./api/network.js`));
+    describe(`Facility API`, () => require(`./api/facility.js`));
 
     describe(`Command API`, () => require(`./api/command.js`));
 
@@ -238,7 +238,7 @@ describe(`MQTT broker (should be run on localhost:1883)`, () => {
 
         it(`should subscribe for notification/insert event and publish new notification`, (done) => {
             const randomNotificationName = randomString.generate();
-            const subscriptionTopic = `dh/notification/${Config.NETWORK_ID}/${Config.DEVICE_TYPE_ID}/${Config.DEVICE_ID}/${randomNotificationName}`;
+            const subscriptionTopic = `dh/notification/${Config.FACILITY_ID}/${Config.PRINTER_ID}/${Config.JOB_ID}/${randomNotificationName}`;
             const action = `notification/insert`;
 
             mqttClient.on(`connect`, () => {
@@ -247,9 +247,9 @@ describe(`MQTT broker (should be run on localhost:1883)`, () => {
                         CONST.DH_REQUEST_TOPIC,
                         JSON.stringify({
                             action: action,
-                            deviceId: Config.DEVICE_ID,
-                            networkId: Config.NETWORK_ID,
-                            deviceTypeId: Config.DEVICE_TYPE_ID,
+                            jobId: Config.JOB_ID,
+                            facilityId: Config.FACILITY_ID,
+                            printerId: Config.PRINTER_ID,
                             notification: {
                                 notification: randomNotificationName,
                                 timestamp: new Date(),
@@ -281,7 +281,7 @@ describe(`MQTT broker (should be run on localhost:1883)`, () => {
 
         it(`should subscribe for command/insert event and publish new command`, (done) => {
             const randomCommandName = randomString.generate();
-            const subscriptionTopic = `dh/command/${Config.NETWORK_ID}/${Config.DEVICE_TYPE_ID}/${Config.DEVICE_ID}/${randomCommandName}`;
+            const subscriptionTopic = `dh/command/${Config.FACILITY_ID}/${Config.PRINTER_ID}/${Config.JOB_ID}/${randomCommandName}`;
             const action = `command/insert`;
 
             mqttClient.on(`connect`, () => {
@@ -290,9 +290,9 @@ describe(`MQTT broker (should be run on localhost:1883)`, () => {
                         CONST.DH_REQUEST_TOPIC,
                         JSON.stringify({
                             action: action,
-                            deviceId: Config.DEVICE_ID,
-                            networkId: Config.NETWORK_ID,
-                            deviceTypeId: Config.DEVICE_TYPE_ID,
+                            jobId: Config.JOB_ID,
+                            facilityId: Config.FACILITY_ID,
+                            printerId: Config.PRINTER_ID,
                             command: {
                                 command: randomCommandName,
                                 timestamp: new Date(),
@@ -327,8 +327,8 @@ describe(`MQTT broker (should be run on localhost:1883)`, () => {
 
         it(`should subscribe for command/update event, create and update command`, (done) => {
             const randomCommandName = randomString.generate();
-            const subscriptionTopic1 = `dh/command_update/${Config.NETWORK_ID}/${Config.DEVICE_TYPE_ID}/${Config.DEVICE_ID}/${randomCommandName}`;
-            const subscriptionTopic2 = `dh/command/${Config.NETWORK_ID}/${Config.DEVICE_TYPE_ID}/${Config.DEVICE_ID}/${randomCommandName}`;
+            const subscriptionTopic1 = `dh/command_update/${Config.FACILITY_ID}/${Config.PRINTER_ID}/${Config.JOB_ID}/${randomCommandName}`;
+            const subscriptionTopic2 = `dh/command/${Config.FACILITY_ID}/${Config.PRINTER_ID}/${Config.JOB_ID}/${randomCommandName}`;
             const actionInsert = `command/insert`;
             const actionUpdate = `command/update`;
             const startValue = 1;
@@ -341,9 +341,9 @@ describe(`MQTT broker (should be run on localhost:1883)`, () => {
                         CONST.DH_REQUEST_TOPIC,
                         JSON.stringify({
                             action: actionInsert,
-                            deviceId: Config.DEVICE_ID,
-                            networkId: Config.NETWORK_ID,
-                            deviceTypeId: Config.DEVICE_TYPE_ID,
+                            jobId: Config.JOB_ID,
+                            facilityId: Config.FACILITY_ID,
+                            printerId: Config.PRINTER_ID,
                             command: {
                                 command: randomCommandName,
                                 timestamp: new Date(),
@@ -369,9 +369,9 @@ describe(`MQTT broker (should be run on localhost:1883)`, () => {
                         CONST.DH_REQUEST_TOPIC,
                         JSON.stringify({
                             action: actionUpdate,
-                            deviceId: Config.DEVICE_ID,
-                            networkId: Config.NETWORK_ID,
-                            deviceTypeId: Config.DEVICE_TYPE_ID,
+                            jobId: Config.JOB_ID,
+                            facilityId: Config.FACILITY_ID,
+                            printerId: Config.PRINTER_ID,
                             commandId: messageObject.command.id,
                             command: {
                                 command: randomCommandName,
@@ -394,8 +394,8 @@ describe(`MQTT broker (should be run on localhost:1883)`, () => {
         });
 
         it(`should be able to unsubscribe from previous subscriptions`, (done) => {
-            const subscriptionTopic1 = `dh/notification/${Config.NETWORK_ID}/${Config.DEVICE_TYPE_ID}/${Config.DEVICE_ID}/light`;
-            const subscriptionTopic2 = `dh/command/${Config.NETWORK_ID}/${Config.DEVICE_TYPE_ID}/${Config.DEVICE_ID}/switchOff`;
+            const subscriptionTopic1 = `dh/notification/${Config.FACILITY_ID}/${Config.PRINTER_ID}/${Config.JOB_ID}/light`;
+            const subscriptionTopic2 = `dh/command/${Config.FACILITY_ID}/${Config.PRINTER_ID}/${Config.JOB_ID}/switchOff`;
             const actionNotification = `notification/insert`;
             const actionCommand = `command/insert`;
             const subscription1Spy = sinon.spy();
@@ -407,9 +407,9 @@ describe(`MQTT broker (should be run on localhost:1883)`, () => {
                         CONST.DH_REQUEST_TOPIC,
                         JSON.stringify({
                             action: actionNotification,
-                            deviceId: Config.DEVICE_ID,
-                            networkId: Config.NETWORK_ID,
-                            deviceTypeId: Config.DEVICE_TYPE_ID,
+                            jobId: Config.JOB_ID,
+                            facilityId: Config.FACILITY_ID,
+                            printerId: Config.PRINTER_ID,
                             notification: {
                                 notification: `light`,
                                 timestamp: new Date(),
@@ -426,9 +426,9 @@ describe(`MQTT broker (should be run on localhost:1883)`, () => {
                         CONST.DH_REQUEST_TOPIC,
                         JSON.stringify({
                             action: actionCommand,
-                            deviceId: Config.DEVICE_ID,
-                            networkId: Config.NETWORK_ID,
-                            deviceTypeId: Config.DEVICE_TYPE_ID,
+                            jobId: Config.JOB_ID,
+                            facilityId: Config.FACILITY_ID,
+                            printerId: Config.PRINTER_ID,
                             command: {
                                 command: "switchOff",
                                 timestamp: new Date(),
@@ -451,9 +451,9 @@ describe(`MQTT broker (should be run on localhost:1883)`, () => {
                             CONST.DH_REQUEST_TOPIC,
                             JSON.stringify({
                                 action: actionNotification,
-                                deviceId: Config.DEVICE_ID,
-                                networkId: Config.NETWORK_ID,
-                                deviceTypeId: Config.DEVICE_TYPE_ID,
+                                jobId: Config.JOB_ID,
+                                facilityId: Config.FACILITY_ID,
+                                printerId: Config.PRINTER_ID,
                                 notification: {
                                     notification: `light`,
                                     timestamp: new Date(),
@@ -472,9 +472,9 @@ describe(`MQTT broker (should be run on localhost:1883)`, () => {
                             CONST.DH_REQUEST_TOPIC,
                             JSON.stringify({
                                 action: actionCommand,
-                                deviceId: Config.DEVICE_ID,
-                                networkId: Config.NETWORK_ID,
-                                deviceTypeId: Config.DEVICE_TYPE_ID,
+                                jobId: Config.JOB_ID,
+                                facilityId: Config.FACILITY_ID,
+                                printerId: Config.PRINTER_ID,
                                 command: {
                                     command: "switchOn",
                                     timestamp: new Date(),
@@ -504,7 +504,7 @@ describe(`MQTT broker (should be run on localhost:1883)`, () => {
         }).timeout(5000);
 
         it(`should send notification of same subscription for each subscriber only once`, (done) => {
-            const SUBSCRIPTION_TOPIC = `dh/notification/${Config.NETWORK_ID}/${Config.DEVICE_TYPE_ID}/${Config.DEVICE_ID}/sharedNotification`;
+            const SUBSCRIPTION_TOPIC = `dh/notification/${Config.FACILITY_ID}/${Config.PRINTER_ID}/${Config.JOB_ID}/sharedNotification`;
             const ACTION_NOTIFICATION = `notification/insert`;
             const mqttClient2 = mqtt.connect(Config.MQTT_BROKER_URL, {
                 username: Config.TEST_LOGIN,
@@ -523,9 +523,9 @@ describe(`MQTT broker (should be run on localhost:1883)`, () => {
                         CONST.DH_REQUEST_TOPIC,
                         JSON.stringify({
                             action: ACTION_NOTIFICATION,
-                            deviceId: Config.DEVICE_ID,
-                            networkId: Config.NETWORK_ID,
-                            deviceTypeId: Config.DEVICE_TYPE_ID,
+                            jobId: Config.JOB_ID,
+                            facilityId: Config.FACILITY_ID,
+                            printerId: Config.PRINTER_ID,
                             notification: {
                                 notification: `sharedNotification`,
                                 timestamp: new Date(),

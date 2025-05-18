@@ -15,10 +15,10 @@ const SUBSCRIPTION_COMMAND_TYPE = `command`;
 const SUBSCRIPTION_NOTIFICATION_TYPE = `notification`;
 const LIST_ACTION = `${SUBJECT}/${LIST_OPERATION}`;
 const LIST_TOPIC = `${CONST.DH_RESPONSE_TOPIC}/${LIST_ACTION}`;
-const SUBSCRIPTION_COMMAND_TOPIC_1 = `dh/${SUBSCRIPTION_COMMAND_TYPE}/${Config.NETWORK_ID}/${Config.DEVICE_TYPE_ID}/${Config.DEVICE_ID}/${TEST_NAME}1`;
-const SUBSCRIPTION_COMMAND_TOPIC_2 = `dh/${SUBSCRIPTION_COMMAND_TYPE}/${Config.NETWORK_ID}/${Config.DEVICE_TYPE_ID}/${Config.DEVICE_ID}/${TEST_NAME}2`;
-const SUBSCRIPTION_NOTIFICATION_TOPIC_1 = `dh/${SUBSCRIPTION_NOTIFICATION_TYPE}/${Config.NETWORK_ID}/${Config.DEVICE_TYPE_ID}/${Config.DEVICE_ID}/${TEST_NAME}1`;
-const SUBSCRIPTION_NOTIFICATION_TOPIC_2 = `dh/${SUBSCRIPTION_NOTIFICATION_TYPE}/${Config.NETWORK_ID}/${Config.DEVICE_TYPE_ID}/${Config.DEVICE_ID}/${TEST_NAME}2`;
+const SUBSCRIPTION_COMMAND_TOPIC_1 = `dh/${SUBSCRIPTION_COMMAND_TYPE}/${Config.FACILITY_ID}/${Config.PRINTER_ID}/${Config.JOB_ID}/${TEST_NAME}1`;
+const SUBSCRIPTION_COMMAND_TOPIC_2 = `dh/${SUBSCRIPTION_COMMAND_TYPE}/${Config.FACILITY_ID}/${Config.PRINTER_ID}/${Config.JOB_ID}/${TEST_NAME}2`;
+const SUBSCRIPTION_NOTIFICATION_TOPIC_1 = `dh/${SUBSCRIPTION_NOTIFICATION_TYPE}/${Config.FACILITY_ID}/${Config.PRINTER_ID}/${Config.JOB_ID}/${TEST_NAME}1`;
+const SUBSCRIPTION_NOTIFICATION_TOPIC_2 = `dh/${SUBSCRIPTION_NOTIFICATION_TYPE}/${Config.FACILITY_ID}/${Config.PRINTER_ID}/${Config.JOB_ID}/${TEST_NAME}2`;
 let mqttClient;
 
 it(`should connect to MQTT broker`, () => {
@@ -124,9 +124,9 @@ it(`should query the list of command subscriptions for the user login: "${Config
             expect(message.subscriptions).to.be.an(`array`);
             expect(
                 message.subscriptions.map((subscriptionObject) => {
-                    return subscriptionObject.deviceId;
+                    return subscriptionObject.jobId;
                 })
-            ).to.include.members([Config.DEVICE_ID]);
+            ).to.include.members([Config.JOB_ID]);
             expect(
                 message.subscriptions.map((subscriptionObject) => {
                     return subscriptionObject.names[0];
@@ -156,9 +156,9 @@ it(`should query the list of notification subscriptions for the user login: "${C
             expect(message.subscriptions).to.be.an(`array`);
             expect(
                 message.subscriptions.map((subscriptionObject) => {
-                    return subscriptionObject.deviceId;
+                    return subscriptionObject.jobId;
                 })
-            ).to.include.members([Config.DEVICE_ID]);
+            ).to.include.members([Config.JOB_ID]);
             expect(
                 message.subscriptions.map((subscriptionObject) => {
                     return subscriptionObject.names[0];

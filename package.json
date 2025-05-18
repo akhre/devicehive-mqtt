@@ -1,7 +1,7 @@
 {
     "name": "devicehive-mqtt",
     "version": "2.0.0",
-    "description": "MQTT plugin for DeviceHive server",
+    "description": "MQTT custom plugin for DeviceHive server",
     "main": "src/broker.js",
     "scripts": {
         "test": "mocha test/unit/**/**.spec.js",
@@ -15,7 +15,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/devicehive/devicehive-mqtt.git"
+        "url": "git+https://github.com/akhre/devicehive-mqtt.git"
     },
     "keywords": [
         "DeviceHive",
@@ -26,9 +26,9 @@
     "author": "Ihor Trambovetskyi (igortram@gmail.com)",
     "license": "Apache-2.0",
     "bugs": {
-        "url": "https://github.com/devicehive/devicehive-mqtt/issues"
+        "url": "https://github.com/akhre/devicehive-mqtt/issues"
     },
-    "homepage": "https://github.com/devicehive/devicehive-mqtt#readme",
+    "homepage": "https://github.com/akhre/devicehive-mqtt#readme",
     "dependencies": {
         "aedes": "^0.47.0",
         "aedes-persistence-redis": "^9.0.1",

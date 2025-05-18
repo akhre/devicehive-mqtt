@@ -20,8 +20,8 @@ const CREATE_TOPIC = `${CONST.DH_RESPONSE_TOPIC}/${CREATE_ACTION}`;
 const REFRESH_TOPIC = `${CONST.DH_RESPONSE_TOPIC}/${REFRESH_ACTION}`;
 const TEST_PAYLOAD = {
     userId: Config.TEST_USER_ID,
-    networkIds: [Config.NETWORK_ID],
-    deviceTypeIds: [Config.DEVICE_TYPE_ID],
+    facilityIds: [Config.FACILITY_ID],
+    printerIds: [Config.PRINTER_ID],
 };
 let mqttClient;
 let refreshToken;

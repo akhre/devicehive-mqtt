@@ -8,25 +8,27 @@ const expect = chai.expect;
 
 const ee = new EventEmitter();
 
-const SUBJECT = `device`;
+const SUBJECT = `facility`;
 const GET_OPERATION = `get`;
 const LIST_OPERATION = `list`;
-const SAVE_OPERATION = `save`;
+const INSERT_OPERATION = `insert`;
+const UPDATE_OPERATION = `update`;
 const DELETE_OPERATION = `delete`;
 const GET_ACTION = `${SUBJECT}/${GET_OPERATION}`;
 const LIST_ACTION = `${SUBJECT}/${LIST_OPERATION}`;
-const SAVE_ACTION = `${SUBJECT}/${SAVE_OPERATION}`;
+const INSERT_ACTION = `${SUBJECT}/${INSERT_OPERATION}`;
+const UPDATE_ACTION = `${SUBJECT}/${UPDATE_OPERATION}`;
 const DELETE_ACTION = `${SUBJECT}/${DELETE_OPERATION}`;
 const GET_TOPIC = `${CONST.DH_RESPONSE_TOPIC}/${GET_ACTION}`;
 const LIST_TOPIC = `${CONST.DH_RESPONSE_TOPIC}/${LIST_ACTION}`;
-const SAVE_TOPIC = `${CONST.DH_RESPONSE_TOPIC}/${SAVE_ACTION}`;
+const INSERT_TOPIC = `${CONST.DH_RESPONSE_TOPIC}/${INSERT_ACTION}`;
+const UPDATE_TOPIC = `${CONST.DH_RESPONSE_TOPIC}/${UPDATE_ACTION}`;
 const DELETE_TOPIC = `${CONST.DH_RESPONSE_TOPIC}/${DELETE_ACTION}`;
-const DEVICE_1_ID = randomString.generate();
-const DEVICE_2_ID = randomString.generate();
-const DEVICE_1_NAME = randomString.generate();
-const DEVICE_2_NAME = randomString.generate();
-const DEVICE_1_NAME_UPDATED = randomString.generate();
+const TEST_FACILITY_NAME = randomString.generate();
+const TEST_FACILITY_DESCRIPTION = randomString.generate();
+const UPDATED_TEST_FACILITY_DESCRIPTION = randomString.generate();
 let mqttClient;
+let testFacilityId;
 
 it(`should connect to MQTT broker`, () => {
     return new Promise((resolve) => {
@@ -77,10 +79,25 @@ it(`should subscribe for "${LIST_TOPIC}" topic`, () => {
     });
 });
 
-it(`should subscribe for "${SAVE_TOPIC}" topic`, () => {
+it(`should subscribe for "${INSERT_TOPIC}" topic`, () => {
     return new Promise((resolve, reject) => {
         mqttClient.subscribe(
-            `${SAVE_TOPIC}@${mqttClient.options.clientId}`,
+            `${INSERT_TOPIC}@${mqttClient.options.clientId}`,
+            (err) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            }
+        );
+    });
+});
+
+it(`should subscribe for "${UPDATE_TOPIC}" topic`, () => {
+    return new Promise((resolve, reject) => {
+        mqttClient.subscribe(
+            `${UPDATE_TOPIC}@${mqttClient.options.clientId}`,
             (err) => {
                 if (err) {
                     reject(err);
@@ -107,65 +124,45 @@ it(`should subscribe for "${DELETE_TOPIC}" topic`, () => {
     });
 });
 
-it(`should create new device (1) with ID: "${DEVICE_1_ID}" and name: "${DEVICE_1_NAME}"`, () => {
+it(`should create new facility with name: "${TEST_FACILITY_NAME}" and description: "${TEST_FACILITY_DESCRIPTION}"`, () => {
     const requestId = randomString.generate();
 
     return new Promise((resolve) => {
         ee.once(requestId, (message) => {
             expect(message.status).to.equal(CONST.SUCCESS_STATUS);
+            expect(message.facility).to.be.an(`object`);
+
+            testFacilityId = message.facility.id;
+
             resolve();
         });
 
         mqttClient.publish(
             CONST.DH_REQUEST_TOPIC,
             JSON.stringify({
-                action: SAVE_ACTION,
+                action: INSERT_ACTION,
                 requestId: requestId,
-                deviceId: DEVICE_1_ID,
-                device: {
-                    name: DEVICE_1_NAME,
-                    data: {},
-                    networkId: Config.NETWORK_ID,
+                facility: {
+                    name: TEST_FACILITY_NAME,
+                    description: TEST_FACILITY_DESCRIPTION,
                 },
             })
         );
     });
 });
 
-it(`should create new device (2) with ID: "${DEVICE_2_ID}" and name: "${DEVICE_2_NAME}"`, () => {
+it(`should query the facility name: "${TEST_FACILITY_NAME} and description: "${TEST_FACILITY_DESCRIPTION}"`, () => {
     const requestId = randomString.generate();
 
     return new Promise((resolve) => {
         ee.once(requestId, (message) => {
             expect(message.status).to.equal(CONST.SUCCESS_STATUS);
-            resolve();
-        });
-
-        mqttClient.publish(
-            CONST.DH_REQUEST_TOPIC,
-            JSON.stringify({
-                action: SAVE_ACTION,
-                requestId: requestId,
-                deviceId: DEVICE_2_ID,
-                device: {
-                    name: DEVICE_2_NAME,
-                    data: {},
-                    networkId: Config.NETWORK_ID,
-                },
-            })
-        );
-    });
-});
-
-it(`should query the device (1) with ID: "${DEVICE_1_ID}" and name: "${DEVICE_1_NAME}"`, () => {
-    const requestId = randomString.generate();
-
-    return new Promise((resolve) => {
-        ee.once(requestId, (message) => {
-            expect(message.status).to.equal(CONST.SUCCESS_STATUS);
-            expect(message.device).to.be.an(`object`);
-            expect(message.device.id).to.equal(DEVICE_1_ID);
-            expect(message.device.name).to.equal(DEVICE_1_NAME);
+            expect(message.facility).to.be.an(`object`);
+            expect(message.facility.id).to.equal(testFacilityId);
+            expect(message.facility.name).to.equal(TEST_FACILITY_NAME);
+            expect(message.facility.description).to.equal(
+                TEST_FACILITY_DESCRIPTION
+            );
 
             resolve();
         });
@@ -175,48 +172,30 @@ it(`should query the device (1) with ID: "${DEVICE_1_ID}" and name: "${DEVICE_1_
             JSON.stringify({
                 action: GET_ACTION,
                 requestId: requestId,
-                deviceId: DEVICE_1_ID,
+                facilityId: testFacilityId,
             })
         );
     });
 });
 
-it(`should query the device (2) with ID: "${DEVICE_2_ID}" and name: "${DEVICE_2_NAME}"`, () => {
+it(`should query the list of facilities with existing facility name: "${TEST_FACILITY_NAME} and description: "${TEST_FACILITY_DESCRIPTION}"`, () => {
     const requestId = randomString.generate();
 
     return new Promise((resolve) => {
         ee.once(requestId, (message) => {
             expect(message.status).to.equal(CONST.SUCCESS_STATUS);
-            expect(message.device).to.be.an(`object`);
-            expect(message.device.id).to.equal(DEVICE_2_ID);
-            expect(message.device.name).to.equal(DEVICE_2_NAME);
-
-            resolve();
-        });
-
-        mqttClient.publish(
-            CONST.DH_REQUEST_TOPIC,
-            JSON.stringify({
-                action: GET_ACTION,
-                requestId: requestId,
-                deviceId: DEVICE_2_ID,
-            })
-        );
-    });
-});
-
-it(`should query the list of devices with existing device (1) and device (2)`, () => {
-    const requestId = randomString.generate();
-
-    return new Promise((resolve) => {
-        ee.once(requestId, (message) => {
-            expect(message.status).to.equal(CONST.SUCCESS_STATUS);
+            expect(message.facilities).to.be.an(`array`);
             expect(
-                message.devices.map((deviceObject) => deviceObject.id)
-            ).to.include.members([DEVICE_1_ID, DEVICE_2_ID]);
+                message.facilities.map((facilityObject) => facilityObject.id)
+            ).to.include.members([testFacilityId]);
             expect(
-                message.devices.map((deviceObject) => deviceObject.name)
-            ).to.include.members([DEVICE_1_NAME, DEVICE_2_NAME]);
+                message.facilities.map((facilityObject) => facilityObject.name)
+            ).to.include.members([TEST_FACILITY_NAME]);
+            expect(
+                message.facilities.map(
+                    (facilityObject) => facilityObject.description
+                )
+            ).to.include.members([TEST_FACILITY_DESCRIPTION]);
 
             resolve();
         });
@@ -226,46 +205,48 @@ it(`should query the list of devices with existing device (1) and device (2)`, (
             JSON.stringify({
                 action: LIST_ACTION,
                 requestId: requestId,
-                networkId: Config.NETWORK_ID,
+                take: 10,
             })
         );
     });
 });
 
-it(`should update the device (1) name: "${DEVICE_1_NAME}" to "${DEVICE_1_NAME_UPDATED}"`, () => {
+it(`should update the facility description: "${TEST_FACILITY_DESCRIPTION}" to "${UPDATED_TEST_FACILITY_DESCRIPTION}"`, () => {
     const requestId = randomString.generate();
 
     return new Promise((resolve) => {
         ee.once(requestId, (message) => {
             expect(message.status).to.equal(CONST.SUCCESS_STATUS);
+
             resolve();
         });
 
         mqttClient.publish(
             CONST.DH_REQUEST_TOPIC,
             JSON.stringify({
-                action: SAVE_ACTION,
+                action: UPDATE_ACTION,
                 requestId: requestId,
-                deviceId: DEVICE_1_ID,
-                device: {
-                    name: DEVICE_1_NAME_UPDATED,
-                    data: {},
-                    networkId: Config.NETWORK_ID,
+                facilityId: testFacilityId,
+                facility: {
+                    description: UPDATED_TEST_FACILITY_DESCRIPTION,
                 },
             })
         );
     });
 });
 
-it(`should query the updated device (1) with ID: "${DEVICE_2_ID}" and updated name: "${DEVICE_1_NAME_UPDATED}"`, () => {
+it(`should query the updated facility where updated description is: "${UPDATED_TEST_FACILITY_DESCRIPTION}"`, () => {
     const requestId = randomString.generate();
 
     return new Promise((resolve) => {
         ee.once(requestId, (message) => {
             expect(message.status).to.equal(CONST.SUCCESS_STATUS);
-            expect(message.device).to.be.an(`object`);
-            expect(message.device.id).to.equal(DEVICE_1_ID);
-            expect(message.device.name).to.equal(DEVICE_1_NAME_UPDATED);
+            expect(message.facility).to.be.an(`object`);
+            expect(message.facility.id).to.equal(testFacilityId);
+            expect(message.facility.name).to.equal(TEST_FACILITY_NAME);
+            expect(message.facility.description).to.equal(
+                UPDATED_TEST_FACILITY_DESCRIPTION
+            );
 
             resolve();
         });
@@ -275,18 +256,19 @@ it(`should query the updated device (1) with ID: "${DEVICE_2_ID}" and updated na
             JSON.stringify({
                 action: GET_ACTION,
                 requestId: requestId,
-                deviceId: DEVICE_1_ID,
+                facilityId: testFacilityId,
             })
         );
     });
 });
 
-it(`should delete device (1) with ID: "${DEVICE_1_ID}"`, () => {
+it(`should delete the facility"`, () => {
     const requestId = randomString.generate();
 
     return new Promise((resolve) => {
         ee.once(requestId, (message) => {
             expect(message.status).to.equal(CONST.SUCCESS_STATUS);
+
             resolve();
         });
 
@@ -295,41 +277,22 @@ it(`should delete device (1) with ID: "${DEVICE_1_ID}"`, () => {
             JSON.stringify({
                 action: DELETE_ACTION,
                 requestId: requestId,
-                deviceId: DEVICE_1_ID,
+                facilityId: testFacilityId,
             })
         );
     });
 });
 
-it(`should delete device (2) with ID: "${DEVICE_2_ID}"`, () => {
+it(`should query the list of the facilities without deleted facility`, () => {
     const requestId = randomString.generate();
 
     return new Promise((resolve) => {
         ee.once(requestId, (message) => {
             expect(message.status).to.equal(CONST.SUCCESS_STATUS);
-            resolve();
-        });
-
-        mqttClient.publish(
-            CONST.DH_REQUEST_TOPIC,
-            JSON.stringify({
-                action: DELETE_ACTION,
-                requestId: requestId,
-                deviceId: DEVICE_2_ID,
-            })
-        );
-    });
-});
-
-it(`should query the list of devices without device (1) and device (2)`, () => {
-    const requestId = randomString.generate();
-
-    return new Promise((resolve) => {
-        ee.once(requestId, (message) => {
-            expect(message.status).to.equal(CONST.SUCCESS_STATUS);
+            expect(message.facilities).to.be.an(`array`);
             expect(
-                message.devices.map((deviceObject) => deviceObject.id)
-            ).to.not.include.members([DEVICE_1_ID, DEVICE_2_ID]);
+                message.facilities.map((facilityObject) => facilityObject.id)
+            ).to.not.include.members([testFacilityId]);
 
             resolve();
         });
@@ -339,7 +302,7 @@ it(`should query the list of devices without device (1) and device (2)`, () => {
             JSON.stringify({
                 action: LIST_ACTION,
                 requestId: requestId,
-                networkId: Config.NETWORK_ID,
+                facilityId: Config.FACILITY_ID,
             })
         );
     });

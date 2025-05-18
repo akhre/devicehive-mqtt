@@ -9,9 +9,9 @@ describe(TopicStructure.name, () => {
     const commandUpdateStr = `command_update`;
     const requestStr = `request`;
     const responseStr = `response`;
-    const networkId = `12276`;
-    const deviceTypeId = `1`;
-    const deviceId = `VQjfBdTl0LvMVBt9RTJMOmwdqr6hWLjln1wZ`;
+    const facilityId = `12276`;
+    const printerId = `1`;
+    const jobId = `VQjfBdTl0LvMVBt9RTJMOmwdqr6hWLjln1wZ`;
     const clientId = `clientId`;
     const name = `temperature`;
     const listOfMethods = [
@@ -23,18 +23,18 @@ describe(TopicStructure.name, () => {
         `isResponse`,
         `isRequest`,
         `getAction`,
-        `getNetworkIds`,
-        `getDeviceTypeIds`,
-        `getDevice`,
+        `getFacilityIds`,
+        `getPrinterIds`,
+        `getJob`,
         `getNames`,
         `isNotification`,
         `isCommandInsert`,
         `isCommandUpdate`,
     ];
     const notDhTopic = `not/dh/topic`;
-    const dhNotificationTopic = `${dhStr}/${notificationStr}/${networkId}/${deviceTypeId}/${deviceId}/${name}`;
-    const dhCommandTopic = `${dhStr}/${commandStr}/${networkId}/${deviceTypeId}/${deviceId}/${name}`;
-    const dhCommandUpdateTopic = `${dhStr}/${commandUpdateStr}/${networkId}/${deviceTypeId}/${deviceId}/${name}`;
+    const dhNotificationTopic = `${dhStr}/${notificationStr}/${facilityId}/${printerId}/${jobId}/${name}`;
+    const dhCommandTopic = `${dhStr}/${commandStr}/${facilityId}/${printerId}/${jobId}/${name}`;
+    const dhCommandUpdateTopic = `${dhStr}/${commandUpdateStr}/${facilityId}/${printerId}/${jobId}/${name}`;
     const dhRequestTopic = `${dhStr}/${requestStr}`;
     const dhNotificationResponseTopic = `${dhStr}/${responseStr}/${notificationStr}@${clientId}`;
 
@@ -75,8 +75,8 @@ describe(TopicStructure.name, () => {
             expect(topicStructure.isNotification()).to.equal(true);
         });
 
-        it(`should has device id: ${deviceId}`, () => {
-            expect(topicStructure.getDevice()).to.equal(deviceId);
+        it(`should has job id: ${jobId}`, () => {
+            expect(topicStructure.getJob()).to.equal(jobId);
         });
 
         it(`should has notification name: ${name}`, () => {
@@ -99,8 +99,8 @@ describe(TopicStructure.name, () => {
             expect(topicStructure.isCommandInsert()).to.equal(true);
         });
 
-        it(`should has device id: ${deviceId}`, () => {
-            expect(topicStructure.getDevice()).to.equal(deviceId);
+        it(`should has job id: ${jobId}`, () => {
+            expect(topicStructure.getJob()).to.equal(jobId);
         });
 
         it(`should has notification name: ${name}`, () => {
@@ -123,8 +123,8 @@ describe(TopicStructure.name, () => {
             expect(topicStructure.isCommandUpdate()).to.equal(true);
         });
 
-        it(`should has device id: ${deviceId}`, () => {
-            expect(topicStructure.getDevice()).to.equal(deviceId);
+        it(`should has job id: ${jobId}`, () => {
+            expect(topicStructure.getJob()).to.equal(jobId);
         });
 
         it(`should has notification name: ${name}`, () => {

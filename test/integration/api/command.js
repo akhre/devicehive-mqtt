@@ -107,7 +107,7 @@ it(`should subscribe for "${UPDATE_TOPIC}" topic`, () => {
     });
 });
 
-it(`should create new command with name: "${TEST_COMMAND_NAME}" for device with id: "${Config.DEVICE_ID}"`, () => {
+it(`should create new command with name: "${TEST_COMMAND_NAME}" for device with id: "${Config.JOB_ID}"`, () => {
     const requestId = randomString.generate();
 
     return new Promise((resolve) => {
@@ -125,7 +125,7 @@ it(`should create new command with name: "${TEST_COMMAND_NAME}" for device with 
             JSON.stringify({
                 action: INSERT_ACTION,
                 requestId: requestId,
-                deviceId: Config.DEVICE_ID,
+                jobId: Config.JOB_ID,
                 command: {
                     command: TEST_COMMAND_NAME,
                     parameters: START_TEST_COMMAND_PARAMETERS,
@@ -147,7 +147,7 @@ it(`should query the command with name: "${TEST_COMMAND_NAME}" and parameters: "
             expect(message.command).to.be.an(`object`);
             expect(message.command.id).to.equal(testCommandId);
             expect(message.command.command).to.equal(TEST_COMMAND_NAME);
-            expect(message.command.deviceId).to.equal(Config.DEVICE_ID);
+            expect(message.command.jobId).to.equal(Config.JOB_ID);
             expect(message.command.parameters).to.deep.equal(
                 START_TEST_COMMAND_PARAMETERS
             );
@@ -160,14 +160,14 @@ it(`should query the command with name: "${TEST_COMMAND_NAME}" and parameters: "
             JSON.stringify({
                 action: GET_ACTION,
                 requestId: requestId,
-                deviceId: Config.DEVICE_ID,
+                jobId: Config.JOB_ID,
                 commandId: testCommandId,
             })
         );
     });
 });
 
-it(`should query the list of command for device with id: "${Config.DEVICE_ID}" with existing command with name: "${TEST_COMMAND_NAME}"`, () => {
+it(`should query the list of command for device with id: "${Config.JOB_ID}" with existing command with name: "${TEST_COMMAND_NAME}"`, () => {
     const requestId = randomString.generate();
 
     return new Promise((resolve) => {
@@ -189,7 +189,7 @@ it(`should query the list of command for device with id: "${Config.DEVICE_ID}" w
             JSON.stringify({
                 action: LIST_ACTION,
                 requestId: requestId,
-                deviceId: Config.DEVICE_ID,
+                jobId: Config.JOB_ID,
                 take: 1000,
             })
         );
@@ -213,7 +213,7 @@ it(`should update the command parameters: "${JSON.stringify(
             JSON.stringify({
                 action: UPDATE_ACTION,
                 requestId: requestId,
-                deviceId: Config.DEVICE_ID,
+                jobId: Config.JOB_ID,
                 commandId: testCommandId,
                 command: {
                     parameters: UPDATED_TEST_COMMAND_PARAMETERS,
@@ -234,7 +234,7 @@ it(`should query the updated command where updated parameters are: "${JSON.strin
             expect(message.command).to.be.an(`object`);
             expect(message.command.id).to.equal(testCommandId);
             expect(message.command.command).to.equal(TEST_COMMAND_NAME);
-            expect(message.command.deviceId).to.equal(Config.DEVICE_ID);
+            expect(message.command.jobId).to.equal(Config.JOB_ID);
 
             resolve();
         });
@@ -244,7 +244,7 @@ it(`should query the updated command where updated parameters are: "${JSON.strin
             JSON.stringify({
                 action: GET_ACTION,
                 requestId: requestId,
-                deviceId: Config.DEVICE_ID,
+                jobId: Config.JOB_ID,
                 commandId: testCommandId,
             })
         );

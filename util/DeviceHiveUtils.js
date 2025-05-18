@@ -85,22 +85,22 @@ class DeviceHiveUtils {
         const topicStructure = new TopicStructure(topic);
         const result = {};
         const action = DeviceHiveUtils.getTopicSubscribeRequestAction(topic);
-        const networkIds = topicStructure.getNetworkIds();
-        const deviceTypeIds = topicStructure.getDeviceTypeIds();
-        const deviceId = topicStructure.getDevice();
+        const facilityIds = topicStructure.getFacilityIds();
+        const printerIds = topicStructure.getPrinterIds();
+        const jobId = topicStructure.getJob();
         const names = topicStructure.getNames();
 
         if (action) {
             result.action = action;
         }
-        if (networkIds) {
-            result.networkIds = networkIds;
+        if (facilityIds) {
+            result.facilityIds = facilityIds;
         }
-        if (deviceTypeIds) {
-            result.deviceTypeIds = deviceTypeIds;
+        if (printerIds) {
+            result.printerIds = printerIds;
         }
-        if (deviceId) {
-            result.deviceId = deviceId;
+        if (jobId) {
+            result.jobId = jobId;
         }
         if (names) {
             result.names = names;

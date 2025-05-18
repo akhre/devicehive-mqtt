@@ -27,26 +27,26 @@ describe(DeviceHiveUtils.name, () => {
 
     describe(`Static method: ${staticMethodsNames.createSubscriptionDataObject}`, () => {
         const expectationObject1 = {
-            topic: `dh/notification/12276/1/deviceId/name`,
+            topic: `dh/notification/12276/1/jobId/name`,
             expectation: {
                 action: `notification/subscribe`,
-                deviceId: `deviceId`,
+                jobId: `jobId`,
                 names: [`name`],
             },
         };
         const expectationObject2 = {
-            topic: `dh/notification/+/1/deviceId/#`,
+            topic: `dh/notification/+/1/jobId/#`,
             expectation: {
                 action: `notification/subscribe`,
-                deviceId: `deviceId`,
+                jobId: `jobId`,
             },
         };
         const expectationObject3 = {
             topic: `dh/command/12276/1/+/temperature`,
             expectation: {
                 action: `command/subscribe`,
-                networkIds: [`12276`],
-                deviceTypeIds: [`1`],
+                facilityIds: [`12276`],
+                printerIds: [`1`],
                 names: [`temperature`],
             },
         };
@@ -54,8 +54,8 @@ describe(DeviceHiveUtils.name, () => {
             topic: `dh/command_update/12276/1/+/temperature`,
             expectation: {
                 action: `command/subscribe`,
-                networkIds: [`12276`],
-                deviceTypeIds: [`1`],
+                facilityIds: [`12276`],
+                printerIds: [`1`],
                 names: [`temperature`],
                 returnUpdatedCommands: true,
             },
@@ -97,8 +97,8 @@ describe(DeviceHiveUtils.name, () => {
     describe(`Static method: ${staticMethodsNames.isSameTopicRoot}`, () => {
         const topic1 = `dh/request`;
         const topic2 = `dh/response`;
-        const topic3 = `dh/notification/1227/1/deviceId/#`;
-        const topic4 = `dh/notification/+/1/deviceId/#`;
+        const topic3 = `dh/notification/1227/1/jobId/#`;
+        const topic4 = `dh/notification/+/1/jobId/#`;
         const topic5 = `dh/#`;
 
         it(`"${topic1}" and "${topic2}" has different topic root`, () => {
@@ -127,10 +127,10 @@ describe(DeviceHiveUtils.name, () => {
     });
 
     describe(`Static method: ${staticMethodsNames.isLessGlobalTopic}`, () => {
-        const topic1 = `dh/notification/1227/1/deviceId/#`;
-        const topic2 = `dh/notification/+/1/deviceId/#`;
+        const topic1 = `dh/notification/1227/1/jobId/#`;
+        const topic2 = `dh/notification/+/1/jobId/#`;
         const topic3 = `dh/notification/#`;
-        const topic4 = `dh/command_update/+/1/deviceId/#`;
+        const topic4 = `dh/command_update/+/1/jobId/#`;
         const topic5 = `dh/#`;
         const topic6 = `dh/notification/+`;
 
@@ -166,10 +166,10 @@ describe(DeviceHiveUtils.name, () => {
     });
 
     describe(`Static method: ${staticMethodsNames.isMoreGlobalTopic}`, () => {
-        const topic1 = `dh/notification/1227/1/deviceId/#`;
-        const topic2 = `dh/notification/+/1/deviceId/#`;
+        const topic1 = `dh/notification/1227/1/jobId/#`;
+        const topic2 = `dh/notification/+/1/jobId/#`;
         const topic3 = `dh/notification/#`;
-        const topic4 = `dh/command_update/+/1/deviceId/#`;
+        const topic4 = `dh/command_update/+/1/jobId/#`;
         const topic5 = `dh/#`;
 
         it(`"${topic1}" should not be more global than "${topic2}"`, () => {
@@ -205,15 +205,15 @@ describe(DeviceHiveUtils.name, () => {
 
     describe(`Static method: ${staticMethodsNames.getTopicSubscribeRequestAction}`, () => {
         const expectation1 = [
-            `dh/notification/1227/1/deviceId/name`,
+            `dh/notification/1227/1/jobId/name`,
             `notification/subscribe`,
         ];
         const expectation2 = [
-            `dh/command/1227/1/deviceId/name`,
+            `dh/command/1227/1/jobId/name`,
             `command/subscribe`,
         ];
         const expectation3 = [
-            `dh/command_update/1227/1/deviceId/name`,
+            `dh/command_update/1227/1/jobId/name`,
             `command/subscribe`,
         ];
         const expectation4 = [`dh/response/notification`, ``];
@@ -245,15 +245,15 @@ describe(DeviceHiveUtils.name, () => {
 
     describe(`Static method: ${staticMethodsNames.getTopicUnsubscribeRequestAction}`, () => {
         const expectation1 = [
-            `dh/notification/1227/1/deviceId/name`,
+            `dh/notification/1227/1/jobId/name`,
             `notification/unsubscribe`,
         ];
         const expectation2 = [
-            `dh/command/1227/1/deviceId/name`,
+            `dh/command/1227/1/jobId/name`,
             `command/unsubscribe`,
         ];
         const expectation3 = [
-            `dh/command_update/1227/1/deviceId/name`,
+            `dh/command_update/1227/1/jobId/name`,
             `command/unsubscribe`,
         ];
         const expectation4 = [`dh/response/notification`, ``];
@@ -293,15 +293,15 @@ describe(DeviceHiveUtils.name, () => {
 
     describe(`Static method: ${staticMethodsNames.getTopicSubscriptionResponseAction}`, () => {
         const expectation1 = [
-            `dh/notification/1227/1/deviceId/name`,
+            `dh/notification/1227/1/jobId/name`,
             `notification/insert`,
         ];
         const expectation2 = [
-            `dh/command/1227/1/deviceId/name`,
+            `dh/command/1227/1/jobId/name`,
             `command/insert`,
         ];
         const expectation3 = [
-            `dh/command_update/1227/1/deviceId/name`,
+            `dh/command_update/1227/1/jobId/name`,
             `command/update`,
         ];
         const expectation4 = [`dh/request/notification`, ``];

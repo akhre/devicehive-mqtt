@@ -147,9 +147,9 @@ user access token.
 
 [DeviceHive] has next structure entities:
 
--   network
--   device type
--   device
+- facility
+- printer
+- job
 -   message type
     -   notification
     -   command
@@ -167,22 +167,22 @@ To receive responses of request the MQTT client should subscribe to the response
 
     dh/response/<requestAction>@<clientID>
 
-Where _requestAction_ ia a request action (**user/get**, **device/delete**, **token/refresh etc.**)
+Where _requestAction_ ia a request action (**user/get**, **job/delete**, **token/refresh etc.**)
 Response topic should be always private (e.g. with client ID mentioned)
 
 The MQTT client is able to subscribe to the notification/command/command_update topic to receive notification/command/command_update push messages
 
-    dh/notification/<networkID>/<deviceTypeID>/<deviceID>/<notificationName>[@<clientID>]
+    dh/notification/<facilityID>/<printerID>/<jobId>/<notificationName>[@<clientID>]
 
-    dh/command/<networkID>/<deviceTypeID>/<deviceID>/<commandName>[@<clientID>]
+    dh/command/<facilityID>/<printerID>/<jobId>/<commandName>[@<clientID>]
 
-    dh/command_update/<networkID>/<deviceTypeID>/<deviceID>/<commandName>[@<clientID>]
+    dh/command_update/<facilityID>/<printerID>/<jobId>/<commandName>[@<clientID>]
 
 Where:
 
--   networkID - id of the network
--   deviceTypeID - id of the device type
--   deviceID - id of the device
+- facilityID - id of the facility
+- printerID - id of the printer
+- jobId - id of the job
 -   notificationName - notification name
 -   commandName - command name
 
@@ -264,26 +264,26 @@ client.on("message", function (topic, message) {
 
 client.on("connect", () => {
     /* Subscribe for notification push messages with name = notificationName
-            of device with id = deviceId on network with id = networkId */
+            of job with id = jobId on facility with id = facilityId */
     client.subscribe(
-        "dh/notification/<networkId>/<deviceTypeId>/<deviceId>/<notificationName>"
+        "dh/notification/<facilityId>/<printerId>/<jobId>/<notificationName>"
     );
 
     /* Subscribe for notification push messages with name = notificationName
-            of any device on network with id = networkId */
+            of any job on facility with id = facilityId */
     client.subscribe(
-        "dh/notification/<networkId>/<deviceTypeId>/+/<notificationName>"
+        "dh/notification/<facilityId>/<printerId>/+/<notificationName>"
     );
 
     /* Subscribe for command push messages with name = commandName
-            of device with id = deviceId on network with id = networkId */
+            of job with id = jobId on facility with id = facilityId */
     client.subscribe(
-        "dh/command/<networkId>/<deviceTypeId>/<deviceId>/<commandName>"
+        "dh/command/<facilityId>/<printerId>/<jobId>/<commandName>"
     );
 
-    /* Subscribe for command push messages on network with id = networkId
-            for any device with any command name */
-    client.subscribe("dh/command/<networkId>/#");
+    /* Subscribe for command push messages on facility with id = facilityId
+            for any job with any command name */
+    client.subscribe("dh/command/<facilityId>/#");
 });
 
 client.on("error", () => {
